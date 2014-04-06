@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe.library.api.resources;
 
+import javax.jms.JMSException;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -76,7 +77,7 @@ public class BookResource {
     @Timed(name = "view-all-books")
     public BooksDto getAllBooks() {
 	BooksDto booksResponse = new BooksDto(bookRepository.getAllBooks());
-	booksResponse.addLink(new LinkDto("create-book", "/books", "POST"));
+	booksResponse.addLink(new LinkDto("create-book", "/booksss", "POST"));
 
 	return booksResponse;
     }
@@ -85,15 +86,21 @@ public class BookResource {
     @Path("/{isbn}")
     @Timed(name = "update-book-status")
     public Response updateBookStatus(@PathParam("isbn") LongParam isbn,
-	    @DefaultValue("available") @QueryParam("status") Status status) {
-	Book book = bookRepository.getBookByISBN(isbn.get());
-	book.setStatus(status);
+	    @DefaultValue("available") @QueryParam("status") Status status) throws JMSException {
+    	System.out.println("Inside Update-BookResource");
+    	Book book = bookRepository.getBookByISBN(isbn.get());
+    	System.out.println("Status : "+ status );
+    	book.setStatus(status);
+    	Long isbnValue = isbn.get();
+    	if(status.getValue() == "lost"){
+    		bookRepository.producer(isbnValue,book);
+    	}
 
-	BookDto bookResponse = new BookDto(book);
-	String location = "/books/" + book.getIsbn();
-	bookResponse.addLink(new LinkDto("view-book", location, "GET"));
+    	BookDto bookResponse = new BookDto(book);
+    	String location = "/books/" + book.getIsbn();
+    	bookResponse.addLink(new LinkDto("view-book", location, "GET"));
 
-	return Response.status(200).entity(bookResponse).build();
+    	return Response.status(200).entity(bookResponse).build();		
     }
 
     @DELETE
@@ -107,4 +114,3 @@ public class BookResource {
 	return bookResponse;
     }
 }
-
