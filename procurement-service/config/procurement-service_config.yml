@@ -23,7 +23,7 @@ http:
   rootPath: /*
 
   # The port on which the HTTP server listens for service requests.
-  port: 9090
+  port: 8080
 
   # The port on which the HTTP server listens for administrative requests.
   adminPort: 9000
