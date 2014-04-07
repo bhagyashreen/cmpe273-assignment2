@@ -1,5 +1,8 @@
 package edu.sjsu.cmpe.library;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,33 +33,53 @@ public class LibraryService extends Service<LibraryServiceConfiguration> {
 	bootstrap.addBundle(new ViewBundle());
 	bootstrap.addBundle(new AssetsBundle());
     }
-    
-     
-    
 
     @Override
-    public void run(LibraryServiceConfiguration configuration,
+    public void run(final LibraryServiceConfiguration configuration,
 	    Environment environment) throws Exception {
 	// This is how you pull the configurations from library_x_config.yml
 	String queueName = configuration.getStompQueueName();
 	String topicName = configuration.getStompTopicName();
-	
 	log.debug("{} - Queue name is {}. Topic name is {}",
 		configuration.getLibraryName(), queueName,
 		topicName);
+	
 	// TODO: Apollo STOMP Broker URL and login
-
 
 	/** Root API */
 	environment.addResource(RootResource.class);
 	/** Books APIs */
-	BookRepositoryInterface bookRepository = new BookRepository();
+	final BookRepositoryInterface bookRepository = new BookRepository();
+	bookRepository.Config(configuration);
+	int numThreads = 1;
+	ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
-	bookRepository.putConfiguration(configuration);
-	environment.addResource(new BookResource(bookRepository));
+
+	Runnable backgroundTask = new Runnable() {
+		 
+	    @Override
+	    public void run() {
+
+	    	while(true){
+	    	Listener listener = new Listener(configuration);
+	    	listener.listenService(bookRepository);
+	    	}
+	    }
+
+	};
+
+	System.out.println("Submitting the background task");
+	executor.execute(backgroundTask);
+	System.out.println("Background task submitted");
+	//executor.shutdown();
+	System.out.println("Done....");
+
+	//bookRepository.updateLibraryAfterResponse(Book receivedBook);
 
 
 	/** UI Resources */
+	environment.addResource(new BookResource(bookRepository));
+
 	environment.addResource(new HomeResource(bookRepository));
     }
 }

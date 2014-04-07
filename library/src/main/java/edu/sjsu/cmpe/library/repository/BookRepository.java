@@ -128,7 +128,7 @@ public class BookRepository implements BookRepositoryInterface {
 	return new ArrayList<Book>(bookInMemoryMap.values());
     }
     
-    public void putConfiguration(LibraryServiceConfiguration configuration){
+    public void Config(LibraryServiceConfiguration configuration){
     	user = configuration.getApolloUser();
     	password = configuration.getApolloPassword(); 
     	host = configuration.getApolloHost();

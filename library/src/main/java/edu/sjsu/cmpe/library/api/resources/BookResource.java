@@ -77,7 +77,7 @@ public class BookResource {
     @Timed(name = "view-all-books")
     public BooksDto getAllBooks() {
 	BooksDto booksResponse = new BooksDto(bookRepository.getAllBooks());
-	booksResponse.addLink(new LinkDto("create-book", "/booksss", "POST"));
+	booksResponse.addLink(new LinkDto("create-book", "/books", "POST"));
 
 	return booksResponse;
     }
@@ -89,7 +89,6 @@ public class BookResource {
 	    @DefaultValue("available") @QueryParam("status") Status status) throws JMSException {
     	System.out.println("Inside Update-BookResource");
     	Book book = bookRepository.getBookByISBN(isbn.get());
-    	System.out.println("Status : "+ status );
     	book.setStatus(status);
     	Long isbnValue = isbn.get();
     	if(status.getValue() == "lost"){

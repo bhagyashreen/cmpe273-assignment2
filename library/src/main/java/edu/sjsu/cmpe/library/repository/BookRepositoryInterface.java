@@ -48,6 +48,6 @@ public interface BookRepositoryInterface {
      */
     void delete(Long isbn);
     void producer(Long isbnValue,Book book) throws JMSException;
-    void putConfiguration(LibraryServiceConfiguration configuration);
+    void Config(LibraryServiceConfiguration configuration);
     void updateLibraryAfterResponse(Book newBook);
 }

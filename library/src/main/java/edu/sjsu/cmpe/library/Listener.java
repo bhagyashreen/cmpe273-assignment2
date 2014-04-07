@@ -54,7 +54,7 @@ class Listener {
 			String password = "password";
 			String host = "54.193.56.218";
 			int port = 61613;
-			String destination = topicName; //topic name from configuration
+			String destination = topicName; 
 
 			StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
 			factory.setBrokerURI("tcp://" + host + ":" + port);
@@ -67,7 +67,7 @@ class Listener {
 
 			MessageConsumer consumer = session.createConsumer(dest);
 			System.currentTimeMillis();
-			System.out.println("Waiting for messages...");
+			System.out.println("Waiting...");
 			while (true) {
 				Message msg = consumer.receive();
 				
@@ -76,12 +76,10 @@ class Listener {
 					if ("SHUTDOWN".equals(receivedData)) {
 						break;
 					}
-					System.out.println("Received message = " + receivedData);					
+					System.out.println("Check the received message.....Message is " + receivedData);					
 					
 					
-					//String data = "1:"Restful Web Services":"computer"/":/""http://goo.gl/ZGmzoJ"";
-						//String receivedData = "1" + ":\"" + "Restful Web Services" + "\":\"" + "computer" + "\":\"" + "http://goo.gl/ZGmzoJ" + "\"";
-						String args1[] = receivedData.split("\"");
+					String args1[] = receivedData.split("\"");
 						
 						String isbn = args1[0].split(":")[0];
 						String title = args1[1];
@@ -96,11 +94,10 @@ class Listener {
 					try {
 						receivedBook.setCoverimage(new URL(coverImage));
 					} catch (MalformedURLException e) {
-					    // eat the exception
+					    
 					}
-					//BookRepositoryInterface bookRepository = new BookRepository();
 					bookRepository.updateLibraryAfterResponse(receivedBook);
-					///
+					
 
 				} else if (msg instanceof StompJmsMessage) {
 					StompJmsMessage smsg = ((StompJmsMessage) msg);
@@ -108,7 +105,7 @@ class Listener {
 					if ("SHUTDOWN".equals(receivedData)) {
 						break;
 					}
-					System.out.println("Received message = " + receivedData);
+					System.out.println("Check the received message.....Message is " + receivedData);
 
 				} else {
 					System.out.println("Unexpected message type: "

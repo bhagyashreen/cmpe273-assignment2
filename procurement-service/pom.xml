@@ -30,6 +30,12 @@
 			<artifactId>dropwizard-core</artifactId>
 			<version>${dropwizard.version}</version>
 		</dependency>
+		<dependency>
+        <groupId>net.sf.json-lib</groupId>
+        <artifactId>json-lib</artifactId>
+        <version>2.4</version>
+        <classifier>jdk15</classifier>
+    </dependency>
 		<!-- Dropwizard jobs from local build -->
 		<dependency>
 			<groupId>de.spinscale.dropwizard</groupId>
@@ -126,8 +132,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- You'll probably want to remove this for your project. I'm just using 
-					it here so that dropwizard-example doesn't get deployed as a library. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.7</version>
